@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bitcoin Vault</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #0f0f0f;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding-top: 100px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.2rem;
+    }
+
+    a {
+      background: #f7931a;
+      color: #fff;
+      padding: 10px 15px;
+      margin: 10px;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    .bitcoin {
+      position: absolute;
+      font-size: 24px;
+      animation: fall linear infinite;
+      color: #f7931a;
+    }
+
+    @keyframes fall {
+      0% {
+        top: -50px;
+        opacity: 0;
+        transform: rotate(0deg);
+      }
+      100% {
+        top: 100vh;
+        opacity: 1;
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1> Welcome to Bitcoin Vault!</h1>
+  <p>Start your crypto investment journey today.</p>
+  <a href="{% url 'signup' %}">Sign Up</a> or <a href="{% url 'login' %}">Login</a>
+
+
+  <!-- falling bitcoins -->
+  <script>
+    const emoji = "₿";
+    const count = 30;
+
+
+  for (let i = 0; i < count; i++) {
+    let img = document.createElement("img");
+    img.src = "{% static 'btc.png' %}";
+    img.className = "bitcoin";
+    img.style.left = Math.random() * 100 + "vw";
+    img.style.animationDuration = 2 + Math.random() * 3 + "s";
+    img.style.width = "50px";       // ✅ make it small
+    img.style.height = "50px";      // ✅ keep aspect ratio
+    document.body.appendChild(img);
+  }
+</script>
+
+</body>
+</html>
