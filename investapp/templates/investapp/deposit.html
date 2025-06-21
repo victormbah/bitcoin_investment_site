@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Deposit BTC</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+
+    .wallet-box {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      margin: 0 auto;
+      box-shadow: 0 0 10px #f7931a90;
+    }
+
+    .btn {
+      background: #f7931a;
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 30px;
+    }
+
+    p {
+      font-size: 1.1rem;
+    }
+
+    .btc {
+      font-weight: bold;
+      color: #f7931a;
+    }
+  </style>
+</head>
+<body>
+  <div class="wallet-box">
+    <h2>Send your BTC here:</h2>
+    <p class="btc">bc1qxyz123fakewallet987btc9example</p>
+    <p>Send <strong>{{ btc_amount|floatformat:8 }} ₿</strong> for your investment of ${{ amount_usd }}</p>
+
+    <a class="btn" href="{% url 'dashboard' %}">Done ✅</a>
+  </div>
+ <form method="POST" action="{% url 'confirm_deposit' inv_id=inv_id %}">
+  {% csrf_token %}
+  <button type="submit" class="btn">I’ve Sent the BTC</button>
+</form>
+
+</body>
+</html>
