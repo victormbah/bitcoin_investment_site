@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Withdraw | Bitcoin Vault</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    .box {
+      background: #1e1e1e;
+      padding: 30px;
+      margin: auto;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #f7931a60;
+    }
+
+    .btn {
+      background: #f7931a;
+      color: #000;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    small {
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Withdraw Funds</h2>
+    {% if total > 0 %}
+      <p>You have <strong>${{ total|floatformat:2 }}</strong> eligible for withdrawal.</p>
+      <p>Send your BTC wallet address to admin@example.com to complete withdrawal.</p>
+    {% else %}
+      <p>No investments eligible for withdrawal yet.</p>
+    {% endif %}
+    <a href="{% url 'dashboard' %}" class="btn">Back to Dashboard</a>
+    <p><small>Withdrawals allowed only after 30 days of confirmation.</small></p>
+  </div>
+</body>
+</html>

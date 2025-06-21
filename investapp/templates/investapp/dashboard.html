@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | Bitcoin Vault</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: #1e1e1e;
+      margin: 0 auto;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 15px #f7931a60;
+    }
+
+    h1 {
+      color: #f7931a;
+      font-size: 2rem;
+    }
+
+    .balance {
+      font-size: 1.5rem;
+      margin: 20px 0;
+    }
+
+    a.logout, a.withdraw {
+      background: #f7931a;
+      color: #000;
+      padding: 10px 15px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+      margin: 10px;
+    }
+
+    form {
+      margin-top: 30px;
+    }
+
+    input[type="number"] {
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      width: 80%;
+      background: #333;
+      color: #fff;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #f7931a;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    table {
+      margin-top: 30px;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #444;
+      color: #ddd;
+      font-size: 14px;
+    }
+
+    th {
+      color: #f7931a;
+    }
+
+    .note {
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .estimate {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #f7931a;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 20px;
+      }
+
+      table, th, td {
+        font-size: 12px;
+      }
+
+      input[type="number"], button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Welcome, {{ user.username }} 👋</h1>
+
+    <p class="balance">Your BTC Balance: <strong>{{ total_btc|floatformat:8 }} ₿</strong></p>
+    <p>Estimated USD Value: <strong>${{ total_usd|floatformat:2 }}</strong> <br><small>(Live Rate: ${{ btc_price }})</small></p>
+
+    <form method="POST" action="{% url 'invest' %}">
+      {% csrf_token %}
+      <input type="number" name="amount" placeholder="Enter amount in USD" required>
+      <div class="estimate" id="estimateText"></div>
+      <button type="submit">Invest</button>
+    </form>
+
+    <h3>Investment History</h3>
+    <table>
+      <tr><th>Amount ($)</th><th>BTC Rate</th><th>BTC</th><th>Date</th></tr>
+      {% for inv in investments %}
+      <tr>
+        <td>${{ inv.amount_usd }}</td>
+        <td>${{ inv.btc_rate }}</td>
+        <td>{{ inv.btc_amount|floatformat:8 }}</td>
+        <td>{{ inv.timestamp|date:"Y-m-d H:i" }}</td>
+      </tr>
+      <tr>
+        <td colspan="4">
+          {% if inv.confirmed %}
+            <small>
+              Days passed: {{ inv.days_since }} |
+              Current Value: ${{ inv.current_value|floatformat:2 }} <br>
+              {% if inv.can_withdraw %}
+                ✅ Eligible for Withdrawal
+              {% else %}
+                ⏳ {{ inv.days_left_to_withdraw }} days left to withdraw
+              {% endif %}
+            </small>
+          {% else %}
+            <small>⚠️ Awaiting BTC confirmation</small>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">No investments yet.</td></tr>
+      {% endfor %}
+    </table>
+
+    <a class="withdraw" href="{% url 'withdraw' %}">💸 Withdraw Funds</a>
+    <a class="logout" href="{% url 'logout' %}">Logout</a>
+
+    <p class="note">📢 This is a fictional project for educational purposes only.</p>
+  </div>
+
+  <script>
+    const input = document.querySelector('input[name="amount"]');
+    const estimateText = document.getElementById("estimateText");
+
+    input.addEventListener("input", () => {
+      let usd = parseFloat(input.value);
+      if (!isNaN(usd)) {
+        let estimated = usd * 1.75;
+        estimateText.innerText = `Estimated return after 30 days: $${estimated.toFixed(2)}`;
+      } else {
+        estimateText.innerText = "";
+      }
+    });
+  </script>
+</body>
+</html>
